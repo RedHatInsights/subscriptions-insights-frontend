@@ -37,7 +37,7 @@ jobs:
         run: npm test
       - name: Code coverage
         if: ${{ success() && contains(matrix.node-version, env.COV_NODE_VERSION) }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.COV_TOKEN }}
       - name: Confirm integration
