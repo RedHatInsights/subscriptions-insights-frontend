@@ -97,14 +97,15 @@ Commit messages follow three basic guidelines
 Creating a pull request activates the following checks through GitHub actions.
 - Commit message linting, see [commit_lint.yml](./.github/workflows/commit_lint.yml)
 - Code documentation linting, see [documentation_lint.yml](./.github/workflows/documentation_lint.yml)
-- Pull request code linting, unit tests and repo-level integration tests, see [pull_request.yml](./.github/workflows/pull_request.yml)
-- Jenkins integration testing. Currently, Jenkins re-runs the same tests being used in [pull_request.yml](./.github/workflows/pull_request.yml)
+- Pull request spelling, code linting, unit tests and repo-level integration tests, see [integration](./.github/workflows/integration.yml)
+  - The spelling config dictionary is here [cspell.config.json](./config/cspell.config.json)
+- Jenkins integration testing. Currently, Jenkins re-runs the same tests being used in [integration](./.github/workflows/integration.yml)
 
 For additional information on failures for
 - Commit messages, see [Pull request commits, messaging](#pull-request-commits-messaging)
-- Code documentation, see [Updating code documentation]()
-- Pull request code, see [Updating unit tests during development]()
-- Jenkins integration can be ignored until it actively runs integration testing.
+- Code documentation, see [Updating code documentation](#documentation)
+- Pull request code, see [Updating unit tests during development](#testing)
+<!-- Jenkins integration can be ignored until it actively runs integration testing. -->
 
 > You can always attempt to restart Jenkins testing by placing a pull request comment
 > with the copy `/retest`.
@@ -176,27 +177,38 @@ To merge code into production stable a maintainer must run the release commit pr
 </details>
 
 <details>
-<summary><h3 style="display: inline-block">NPM maintenance</h3></summary>
+<summary><h3 style="display: inline-block">NPM dependency maintenance</h3></summary>
 
-#### Cycle for updating NPMs
+#### Automated cycle for updating NPMs
+Automation primarily makes use of `dependabot`.
+> Configuration for `dependabot` is located under the [github directory](.github/).
+
+Our current schedule for automated dependency updates
+- dependabot running once a week on low-level dev packages that only require testing confirmation. Low-level is indicated by semver version `minor` and `patch` updates.
+
+#### Manual cycle for updating NPMs
 Our schedule for updating NPMs
-- dependabot running once a week on low level packages that require only testing confirmation
 - 1x a month: running our aggregated dependency update script for all low level packages that require only testing confirmation
    - `$ npm run build:deps`
-- 1x a month: running updates on NPMs that require additional visual confirmation, this includes...
+- 1x a month: running updates on NPMs that require additional visual and build confirmation. **These packages' semver confidence is labeled as suspect. Breaking changes have been introduced as minor and patch versions. If a package consistently adheres to semver, subject to discussion, they'll be removed from this list.** This includes...
    - dependency-name: "@patternfly/*"
    - dependency-name: "@redhat-cloud-services/frontend*"
-   - dependency-name: "*i18next*"
    - dependency-name: "victory*"
-   - dependency-name: "react-router*"
 
-#### Process for updating NPMs
+#### Process for manually updating NPMs
 To update packages in bulk there are 2 pre-defined paths, "basic" and "core".
 
-> It is **highly discouraged** that you rely on updating ANY `lock` file ONLY. This creates long-term issues when NPM references in `package.json` potentially require specific
+> For most users, it is **highly discouraged** that you rely on updating ANY `lock` file section ONLY. This potentially creates long-term issues when NPM references in `package.json` potentially require specific
 > dependencies, or have built around specific package functionality that could be inadvertently altered by updating a dependencies' dependency.
+> 
+> For the knowledge, there is a parallel technique for forcing dependency updates based on the syntax leveraged inside of [`package.json`](./package.json). The `caret` character used in
+> [`package.json`](./package.json), for example, indicates `minor` and `patch` versions are backwards compatible with a major package version. By deleting the entire `lock` file, and for simplicity the `node_modules`
+> directory too, then running `$ npm install` you can effectively trigger NPM's install process for leveraging the syntax inside your [`package.json`](./package.json) along with subsequent dependencies.
+> This is useful in scenarios where a dependency of a dependency spans multiple packages and is triggering an alert, or when debugging problematic packages becomes time intensive. However, this should be used sparingly,
+> to avoid breaking changes, and tested thoroughly.
 
 ##### Basic NPM updates
+> You can see a listing of all outdated packages by running `$ npm outdated` in the repo context.
 
 1. Clone the repository locally, or bring your fork up-to-date with the development branch. [Make sure development tooling is installed](#install-tooling). 
 1. Open a terminal instance in the repository context and run
@@ -247,7 +259,7 @@ To update packages in bulk there are 2 pre-defined paths, "basic" and "core".
 > since future updates will be affected by skipping potentially any package update.
 > A `dependency-update-log.txt" file is generated in the root of the repository after each run of `$ npm run build:deps-core` this should contain a listing of the skipped packages.
 
-##### Manual NPM updates
+##### Manual fallback NPM updates
 This is the slowest part of package updates. If any packages are skipped during the "basic" and "core" automation runs. Those packages will need to be updated manually.
 1. Clone the repository locally, or bring your fork up-to-date with the development branch. [Make sure development tooling is installed](#install-tooling).
 1. Remove/delete the `node_modules` directory (there may be differences between branches that create package alterations) 
@@ -285,9 +297,7 @@ This is the slowest part of package updates. If any packages are skipped during 
 - Continuous Integration. The build currently has both old, and new, continuous integration running. Continuous integration makes use of Webpack build files.
    - Ephemeral build files
       - [`./deploy`](deploy) 
-   - Travis build files
-      - [`./.travis.yml`](.travis.yml)
-      - [`./.travis`](.travis)
+   - Konflux
 - GitHub Actions
    - Action files
       - [`./.github/workflows`](.github/workflows)
@@ -538,6 +548,66 @@ This project makes use of React & Redux. To enable Redux browser console logging
   ```
   REACT_APP_DEBUG_MIDDLEWARE=true
   ```
+
+#### Debugging in environment
+Sporadically, an issue in the staging, or production, environment will cause the GUI to behave with a failure. The most common reasons for this failure relate to the GUI and API interaction.
+This type of failure can result from a range of issues such as incorrect search/query parameters, and/or the API simply being unavailable.
+
+GUI code architecture is structured around failing gracefully. This means a debugging feature is now conveniently presented in environment
+to avoid having to dig into the GUI code, or open the browser console.
+
+This feature is presented as a `gear icon` in the upper right corner of the...
+- graph card(s)
+- inventory card(s)
+- and inventory guests (when available)
+
+Clicking the `gear icon` will...
+- Display the immediate service failure(s) in context to the GUI component, state, and service layers along with the API response within a selectable `textarea`.
+</details>
+
+<details>
+<summary><h3 style="display: inline-block">Documentation</h3></summary>
+
+#### Code documentation
+The build, currently, makes use of JSDoc comments to autocorrect, potentially generate, lint, and build code markdown files.
+
+##### Correcting comments
+After you've added comments you can attempt to have the linting tools autocorrect any issues, such as comment line-lengths
+
+To update these files after updating comments
+  ```
+  $ npm run test:lintfix
+  ```
+
+> Certain editors, if setup correctly, provide a convenience method to allow you to run similar repo level linting corrections by right-clicking on the file and running a general ESLint "fix" command.
+
+##### Adding comments
+You can attempt to autogenerate comments by running the same command as the `Correcting comments` above.
+
+To update files with generated comments run
+  ```
+  $ npm run test:lintfix
+  ```
+
+This will provide a very **ROUGH** outline for you to **FURTHER** populate with more accurate information.
+
+> It is encouraged you emulate existing JSDoc comments found within the repo, and/or read up on using [JSDoc](https://jsdoc.app). You may be asked to correct your
+copy if it does not align to existing comments.
+>
+> Some Typescript shortcut syntax is not fully compatible with all JSDoc plugins, characters like the Array brackets `[]` or optional `?` question mark. In those cases more basic syntax may need to be used. For example, in the case of Array you would instead use
+> `Array<TYPE GOES HERE>`.
+
+> JSDoc comments, similar to Typescript typings, are for development reference. But while comments won't necessarily block development, the more accurate they are the more helpful.
+
+##### Updating documentation
+Adding or modifying existing JSDoc comments creates the requirement to update code level documentation. This requirement is represented by `README.md` files located underneath the first directory tier of the [source directory](./src).
+
+To update these files after updating comments 
+  ```
+  $ npm run build:docs
+  ```
+
+> A PR/MR linting check currently runs to confirm you've updated documentation, so you'll need to add these files to your PR/MR.
 </details>
 
 <details>
