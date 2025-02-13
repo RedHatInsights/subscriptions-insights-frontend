@@ -38,7 +38,7 @@
     "api:spec": "SPEC=https://petstore.swagger.io/?url=https://raw.githubusercontent.com/RedHatInsights/rhsm-subscriptions/main/api/rhsm-subscriptions-api-v1-spec.yaml; xdg-open $SPEC || open $SPEC",
     "api:spec2": "SPEC=https://petstore.swagger.io/?url=https://raw.githubusercontent.com/RedHatInsights/rhsm-subscriptions/main/api/rhsm-subscriptions-api-v2-spec.yaml; xdg-open $SPEC || open $SPEC",
     "build": "run-s -l build:pre build:js build:post test:integration",
-    "build:deps": "bash ./scripts/dependencies.sh --doctor -u --doctorTest \"npm run test:deps\" --reject \"@patternfly/*, @redhat-cloud-services/frontend*, react-router, victory*\"",
+    "build:deps": "bash ./scripts/dependencies.sh --doctor -u --doctorTest \"npm run test:deps\" --reject \"@patternfly/*, @redhat-cloud-services/frontend*, victory*\"",
     "build:deps-core": "bash ./scripts/dependencies.sh --doctor -u --doctorTest \"npm run test:deps\" --filter \"@patternfly/*, @redhat-cloud-services/frontend*, victory*\"",
     "build:docs": "run-s -l test:docs docs:md",
     "build:ephemeral": "run-s -l build:pre build:js build:post test:integration-ephemeral",

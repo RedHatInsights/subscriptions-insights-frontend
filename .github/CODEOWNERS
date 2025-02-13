@@ -7,3 +7,7 @@
 
 # CODEOWNERS permissions
 /.github/CODEOWNERS @barnabycourt @cdcabrera
+
+# Automated dependency updates
+package*.json @vbusch @kflahert @cdcabrera
+/.tekton/ @vbusch @kflahert @cdcabrera @barnabycourt
