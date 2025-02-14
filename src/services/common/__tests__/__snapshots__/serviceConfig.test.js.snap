@@ -1,17 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ServiceConfig should allow passing a function and emulating a service call: function responses 1`] = `
-[
-  "lorem.ipsum",
-  "lorem.ipsum-function-schema-transform",
-  "lorem.ipsum-function-transform",
-  undefined,
-  "dolor.sit-error-transform",
-  "dolor.sit-error-transform",
-]
-`;
-
-exports[`ServiceConfig should handle caching service calls: cached responses, emulated 304 1`] = `
+exports[`Cache service calls should handle caching service calls: cached responses, emulated 304 1`] = `
 [
   "1. method=get, status=200, cacheId=c2127638620, desc=initial call",
   "2. method=get, status=304, cacheId=c2127638620, desc=repeat 1st call and config",
@@ -22,9 +11,9 @@ exports[`ServiceConfig should handle caching service calls: cached responses, em
 ]
 `;
 
-exports[`ServiceConfig should handle cancelling service calls: cancelled request, Promise.all 1`] = `"cancelled request"`;
+exports[`Cancel service calls should handle cancelling service calls: cancelled request, Promise.all 1`] = `[CanceledError: cancelled request]`;
 
-exports[`ServiceConfig should handle cancelling service calls: cancelled request, Promise.allSettled 1`] = `
+exports[`Cancel service calls should handle cancelling service calls: cancelled request, Promise.allSettled 1`] = `
 [
   {
     "reason": [CanceledError: cancelled request],
@@ -319,113 +308,29 @@ exports[`ServiceConfig should handle cancelling service calls: cancelled request
 ]
 `;
 
-exports[`ServiceConfig should handle polling service call errors: location error 1`] = `
+exports[`Emulate a service call with a function should allow schema transforming a function call response: transform 1`] = `"lorem.ipsum-function-schema-transform"`;
+
+exports[`Emulate a service call with a function should allow transforming a function call response: transform 1`] = `"lorem.ipsum-function-transform"`;
+
+exports[`Emulate a service call with a function should handle function call response error string with transformations: error transformation 1`] = `
 [
-  [
-    [Error: location string error],
-  ],
-  [
-    [Error: location string error],
-  ],
+  "dolor.sit-error-transform",
 ]
 `;
 
-exports[`ServiceConfig should handle polling service call errors: status error 1`] = `
+exports[`Emulate a service call with a function should handle function call response error with transformations: error transformation 1`] = `
 [
-  [
-    [Error: status error],
-  ],
-  [
-    [Error: status error],
-  ],
-  [
-    [Error: status error],
-  ],
-  [
-    [Error: status error],
-  ],
-  [
-    [Error: status error],
-  ],
+  "dolor.sit-error-transform",
 ]
 `;
 
-exports[`ServiceConfig should handle polling service call errors: status error polling 1`] = `
-{
-  "status": [
-    {
-      "count": -1,
-      "response": {
-        "data": undefined,
-        "error": undefined,
-        "pollConfig": undefined,
-      },
-    },
-    {
-      "count": 0,
-      "response": {
-        "data": undefined,
-        "error": true,
-        "pollConfig": {
-          "__retryCount": 0,
-          "location": {
-            "config": undefined,
-            "url": "/pollError",
-          },
-          "pollInterval": 0,
-          "status": [Function],
-          "validate": [Function],
-        },
-      },
-    },
-  ],
-}
-`;
-
-exports[`ServiceConfig should handle polling service call errors: status of a status error 1`] = `
+exports[`Emulate a service call with a function should handle function call response errors: error 1`] = `
 [
-  [
-    [Error: status error],
-  ],
-  [
-    [Error: status error],
-  ],
+  "dolor.sit",
 ]
 `;
 
-exports[`ServiceConfig should handle polling service call errors: status of a status error polling 1`] = `
-{
-  "status": [
-    {
-      "count": -1,
-      "response": {
-        "data": undefined,
-        "error": undefined,
-        "pollConfig": undefined,
-      },
-    },
-    {
-      "count": 0,
-      "response": {
-        "data": undefined,
-        "error": true,
-        "pollConfig": {
-          "__retryCount": 0,
-          "location": {
-            "config": undefined,
-            "url": "/pollError",
-          },
-          "pollInterval": 0,
-          "status": [Function],
-          "validate": [Function],
-        },
-      },
-    },
-  ],
-}
-`;
-
-exports[`ServiceConfig should handle polling service call errors: validation error 1`] = `
+exports[`Poll service calls should handle basic polling error: error 1`] = `
 [
   [
     [Error: basic validation error],
@@ -433,7 +338,7 @@ exports[`ServiceConfig should handle polling service call errors: validation err
 ]
 `;
 
-exports[`ServiceConfig should handle polling service calls: basic polling validator 1`] = `
+exports[`Poll service calls should handle basic polling: basic 1`] = `
 {
   "output": {
     "data": "success",
@@ -489,7 +394,93 @@ exports[`ServiceConfig should handle polling service calls: basic polling valida
 }
 `;
 
-exports[`ServiceConfig should handle polling service calls: custom location 1`] = `
+exports[`Poll service calls should handle polling against a different service call path but with a callback error: different service call with callback errors 1`] = `
+[
+  [
+    [Error: location string error],
+  ],
+  [
+    [Error: location string error],
+  ],
+]
+`;
+
+exports[`Poll service calls should handle polling against a different service call path error and status callback error: status of a status error 1`] = `
+[
+  [
+    [Error: status error],
+  ],
+  [
+    [Error: status error],
+  ],
+]
+`;
+
+exports[`Poll service calls should handle polling against a different service call path error and status callback error: status of a status error polling 1`] = `
+{
+  "status": [
+    {
+      "count": -1,
+      "response": {
+        "data": undefined,
+        "error": undefined,
+        "pollConfig": undefined,
+      },
+    },
+    {
+      "count": 0,
+      "response": {
+        "data": undefined,
+        "error": true,
+        "pollConfig": {
+          "__retryCount": 0,
+          "location": {
+            "config": undefined,
+            "url": "/pollError",
+          },
+          "pollInterval": 0,
+          "status": [Function],
+          "validate": [Function],
+        },
+      },
+    },
+  ],
+}
+`;
+
+exports[`Poll service calls should handle polling against a different service call path error and status callback: different service call error with status callback 1`] = `
+{
+  "status": [
+    {
+      "count": -1,
+      "response": {
+        "data": undefined,
+        "error": undefined,
+        "pollConfig": undefined,
+      },
+    },
+    {
+      "count": 0,
+      "response": {
+        "data": undefined,
+        "error": true,
+        "pollConfig": {
+          "__retryCount": 0,
+          "location": {
+            "config": undefined,
+            "url": "/pollError",
+          },
+          "pollInterval": 0,
+          "status": [Function],
+          "validate": [Function],
+        },
+      },
+    },
+  ],
+}
+`;
+
+exports[`Poll service calls should handle polling against a different service call path: different service call 1`] = `
 {
   "output": {
     "data": "success",
@@ -542,7 +533,91 @@ exports[`ServiceConfig should handle polling service calls: custom location 1`] 
 }
 `;
 
-exports[`ServiceConfig should handle polling service calls: specific polling validator 1`] = `
+exports[`Poll service calls should handle polling with a status callback error: callback error 1`] = `
+[
+  [
+    [Error: status error],
+  ],
+  [
+    [Error: status error],
+  ],
+  [
+    [Error: status error],
+  ],
+  [
+    [Error: status error],
+  ],
+  [
+    [Error: status error],
+  ],
+]
+`;
+
+exports[`Poll service calls should handle polling with a status callback: callback 1`] = `
+{
+  "output": {
+    "data": "success",
+    "pollConfig": {
+      "status": [Function],
+      "validate": [Function],
+    },
+  },
+  "status": [
+    {
+      "count": -1,
+      "response": {
+        "data": undefined,
+        "error": undefined,
+        "pollConfig": undefined,
+      },
+    },
+    {
+      "count": 0,
+      "response": {
+        "data": "success",
+        "error": false,
+        "pollConfig": {
+          "__retryCount": 0,
+          "location": {
+            "config": undefined,
+            "url": "/test/",
+          },
+          "pollInterval": 0,
+          "status": [Function],
+          "validate": [Function],
+        },
+      },
+    },
+    {
+      "count": 1,
+      "response": {
+        "data": "success",
+        "error": false,
+        "pollConfig": {
+          "__retryCount": 1,
+          "location": {
+            "config": undefined,
+            "url": "/test/",
+          },
+          "pollInterval": 1,
+          "status": [Function],
+          "validate": [Function],
+        },
+      },
+    },
+  ],
+}
+`;
+
+exports[`Poll service calls should handle polling with a validate callback error: callback error 1`] = `
+[
+  [
+    [Error: status error],
+  ],
+]
+`;
+
+exports[`Poll service calls should handle polling with a validate callback: callback 1`] = `
 {
   "output": {
     "data": "success",
@@ -600,139 +675,7 @@ exports[`ServiceConfig should handle polling service calls: specific polling val
 }
 `;
 
-exports[`ServiceConfig should handle polling service calls: status polling 1`] = `
-{
-  "output": {
-    "data": "success",
-    "pollConfig": {
-      "status": [Function],
-      "validate": [Function],
-    },
-  },
-  "status": [
-    {
-      "count": -1,
-      "response": {
-        "data": undefined,
-        "error": undefined,
-        "pollConfig": undefined,
-      },
-    },
-    {
-      "count": 0,
-      "response": {
-        "data": "success",
-        "error": false,
-        "pollConfig": {
-          "__retryCount": 0,
-          "location": {
-            "config": undefined,
-            "url": "/test/",
-          },
-          "pollInterval": 0,
-          "status": [Function],
-          "validate": [Function],
-        },
-      },
-    },
-    {
-      "count": 1,
-      "response": {
-        "data": "success",
-        "error": false,
-        "pollConfig": {
-          "__retryCount": 1,
-          "location": {
-            "config": undefined,
-            "url": "/test/",
-          },
-          "pollInterval": 1,
-          "status": [Function],
-          "validate": [Function],
-        },
-      },
-    },
-    {
-      "count": 2,
-      "response": {
-        "data": "success",
-        "error": false,
-        "pollConfig": {
-          "__retryCount": 2,
-          "location": {
-            "config": undefined,
-            "url": "/test/",
-          },
-          "pollInterval": 1,
-          "status": [Function],
-          "validate": [Function],
-        },
-      },
-    },
-  ],
-}
-`;
-
-exports[`ServiceConfig should handle producing a service call configuration: response configs 1`] = `
-[
-  "{
-  transitional: {
-    silentJSONParsing: true,
-    forcedJSONParsing: true,
-    clarifyTimeoutError: false
-  },
-  adapter: function mockAdapter(config) {\\n\\t  return new Promise(function (resolve, reject) {\\n\\t    var request = new Request(resolve, reject, config);\\n\\t    moxios.requests.track(request);\\n\\t\\n\\t    // Check for matching stub to auto respond with\\n\\t    for (var i = 0, l = moxios.stubs.count(); i < l; i++) {\\n\\t      var stub = moxios.stubs.at(i);\\n\\t      var correctURL = stub.url instanceof RegExp ? stub.url.test(request.url) : stub.url === request.url;\\n\\t      var correctMethod = true;\\n\\t\\n\\t      if (stub.method !== undefined) {\\n\\t        correctMethod = stub.method.toLowerCase() === request.config.method.toLowerCase();\\n\\t      }\\n\\t\\n\\t      if (correctURL && correctMethod) {\\n\\t        if (stub.timeout) {\\n\\t          throwTimeout(config);\\n\\t        }\\n\\t        request.respondWith(stub.response);\\n\\t        stub.resolve();\\n\\t        break;\\n\\t      }\\n\\t    }\\n\\t  });\\n\\t},
-  transformRequest: [
-    function transformRequest(data, headers) {\\n    const contentType = headers.getContentType() || '';\\n    const hasJSONContentType = contentType.indexOf('application/json') > -1;\\n    const isObjectPayload = utils$1.isObject(data);\\n\\n    if (isObjectPayload && utils$1.isHTMLForm(data)) {\\n      data = new FormData(data);\\n    }\\n\\n    const isFormData = utils$1.isFormData(data);\\n\\n    if (isFormData) {\\n      return hasJSONContentType ? JSON.stringify(formDataToJSON(data)) : data;\\n    }\\n\\n    if (utils$1.isArrayBuffer(data) ||\\n      utils$1.isBuffer(data) ||\\n      utils$1.isStream(data) ||\\n      utils$1.isFile(data) ||\\n      utils$1.isBlob(data) ||\\n      utils$1.isReadableStream(data)\\n    ) {\\n      return data;\\n    }\\n    if (utils$1.isArrayBufferView(data)) {\\n      return data.buffer;\\n    }\\n    if (utils$1.isURLSearchParams(data)) {\\n      headers.setContentType('application/x-www-form-urlencoded;charset=utf-8', false);\\n      return data.toString();\\n    }\\n\\n    let isFileList;\\n\\n    if (isObjectPayload) {\\n      if (contentType.indexOf('application/x-www-form-urlencoded') > -1) {\\n        return toURLEncodedForm(data, this.formSerializer).toString();\\n      }\\n\\n      if ((isFileList = utils$1.isFileList(data)) || contentType.indexOf('multipart/form-data') > -1) {\\n        const _FormData = this.env && this.env.FormData;\\n\\n        return toFormData(\\n          isFileList ? {'files[]': data} : data,\\n          _FormData && new _FormData(),\\n          this.formSerializer\\n        );\\n      }\\n    }\\n\\n    if (isObjectPayload || hasJSONContentType ) {\\n      headers.setContentType('application/json', false);\\n      return stringifySafely(data);\\n    }\\n\\n    return data;\\n  }
-  ],
-  transformResponse: [
-    function transformResponse(data) {\\n    const transitional = this.transitional || defaults.transitional;\\n    const forcedJSONParsing = transitional && transitional.forcedJSONParsing;\\n    const JSONRequested = this.responseType === 'json';\\n\\n    if (utils$1.isResponse(data) || utils$1.isReadableStream(data)) {\\n      return data;\\n    }\\n\\n    if (data && utils$1.isString(data) && ((forcedJSONParsing && !this.responseType) || JSONRequested)) {\\n      const silentJSONParsing = transitional && transitional.silentJSONParsing;\\n      const strictJSONParsing = !silentJSONParsing && JSONRequested;\\n\\n      try {\\n        return JSON.parse(data);\\n      } catch (e) {\\n        if (strictJSONParsing) {\\n          if (e.name === 'SyntaxError') {\\n            throw AxiosError.from(e, AxiosError.ERR_BAD_RESPONSE, this, null, this.response);\\n          }\\n          throw e;\\n        }\\n      }\\n    }\\n\\n    return data;\\n  }
-  ],
-  timeout: 60000,
-  xsrfCookieName: XSRF-TOKEN,
-  xsrfHeaderName: X-XSRF-TOKEN,
-  maxContentLength: -1,
-  maxBodyLength: -1,
-  env: {
-    FormData: class FormData {\\n    constructor() {\\n      const args = [];\\n      {\\n        let curArg = arguments[0];\\n        if (curArg !== undefined) {\\n          curArg = HTMLFormElement.convert(globalObject, curArg, {\\n            context: \\Failed to construct 'FormData': parameter 1\\\\n          });\\n        }\\n        args.push(curArg);\\n      }\\n      return exports.setup(Object.create(new.target.prototype), globalObject, args);\\n    }\\n\\n    append(name, value) {\\n      const esValue = this !== null && this !== undefined ? this : globalObject;\\n      if (!exports.is(esValue)) {\\n        throw new globalObject.TypeError(\\'append' called on an object that is not a valid instance of FormData.\\);\\n      }\\n\\n      if (arguments.length < 2) {\\n        throw new globalObject.TypeError(\\n          \`Failed to execute 'append' on 'FormData': 2 arguments required, but only \${arguments.length} present.\`\\n        );\\n      }\\n      const args = [];\\n      switch (arguments.length) {\\n        case 2:\\n          {\\n            let curArg = arguments[0];\\n            curArg = conversions[\\USVString\\](curArg, {\\n              context: \\Failed to execute 'append' on 'FormData': parameter 1\\,\\n              globals: globalObject\\n            });\\n            args.push(curArg);\\n          }\\n          {\\n            let curArg = arguments[1];\\n            if (Blob.is(curArg)) {\\n              {\\n                let curArg = arguments[1];\\n                curArg = Blob.convert(globalObject, curArg, {\\n                  context: \\Failed to execute 'append' on 'FormData': parameter 2\\\\n                });\\n                args.push(curArg);\\n              }\\n            } else {\\n              {\\n                let curArg = arguments[1];\\n                curArg = conversions[\\USVString\\](curArg, {\\n                  context: \\Failed to execute 'append' on 'FormData': parameter 2\\,\\n                  globals: globalObject\\n                });\\n                args.push(curArg);\\n              }\\n            }\\n          }\\n          break;\\n        default:\\n          {\\n            let curArg = arguments[0];\\n            curArg = conversions[\\USVString\\](curArg, {\\n              context: \\Failed to execute 'append' on 'FormData': parameter 1\\,\\n              globals: globalObject\\n            });\\n            args.push(curArg);\\n          }\\n          {\\n            let curArg = arguments[1];\\n            curArg = Blob.convert(globalObject, curArg, {\\n              context: \\Failed to execute 'append' on 'FormData': parameter 2\\\\n            });\\n            args.push(curArg);\\n          }\\n          {\\n            let curArg = arguments[2];\\n            if (curArg !== undefined) {\\n              curArg = conversions[\\USVString\\](curArg, {\\n                context: \\Failed to execute 'append' on 'FormData': parameter 3\\,\\n                globals: globalObject\\n              });\\n            }\\n            args.push(curArg);\\n          }\\n      }\\n      return esValue[implSymbol].append(...args);\\n    }\\n\\n    delete(name) {\\n      const esValue = this !== null && this !== undefined ? this : globalObject;\\n      if (!exports.is(esValue)) {\\n        throw new globalObject.TypeError(\\'delete' called on an object that is not a valid instance of FormData.\\);\\n      }\\n\\n      if (arguments.length < 1) {\\n        throw new globalObject.TypeError(\\n          \`Failed to execute 'delete' on 'FormData': 1 argument required, but only \${arguments.length} present.\`\\n        );\\n      }\\n      const args = [];\\n      {\\n        let curArg = arguments[0];\\n        curArg = conversions[\\USVString\\](curArg, {\\n          context: \\Failed to execute 'delete' on 'FormData': parameter 1\\,\\n          globals: globalObject\\n        });\\n        args.push(curArg);\\n      }\\n      return esValue[implSymbol].delete(...args);\\n    }\\n\\n    get(name) {\\n      const esValue = this !== null && this !== undefined ? this : globalObject;\\n      if (!exports.is(esValue)) {\\n        throw new globalObject.TypeError(\\'get' called on an object that is not a valid instance of FormData.\\);\\n      }\\n\\n      if (arguments.length < 1) {\\n        throw new globalObject.TypeError(\\n          \`Failed to execute 'get' on 'FormData': 1 argument required, but only \${arguments.length} present.\`\\n        );\\n      }\\n      const args = [];\\n      {\\n        let curArg = arguments[0];\\n        curArg = conversions[\\USVString\\](curArg, {\\n          context: \\Failed to execute 'get' on 'FormData': parameter 1\\,\\n          globals: globalObject\\n        });\\n        args.push(curArg);\\n      }\\n      return utils.tryWrapperForImpl(esValue[implSymbol].get(...args));\\n    }\\n\\n    getAll(name) {\\n      const esValue = this !== null && this !== undefined ? this : globalObject;\\n      if (!exports.is(esValue)) {\\n        throw new globalObject.TypeError(\\'getAll' called on an object that is not a valid instance of FormData.\\);\\n      }\\n\\n      if (arguments.length < 1) {\\n        throw new globalObject.TypeError(\\n          \`Failed to execute 'getAll' on 'FormData': 1 argument required, but only \${arguments.length} present.\`\\n        );\\n      }\\n      const args = [];\\n      {\\n        let curArg = arguments[0];\\n        curArg = conversions[\\USVString\\](curArg, {\\n          context: \\Failed to execute 'getAll' on 'FormData': parameter 1\\,\\n          globals: globalObject\\n        });\\n        args.push(curArg);\\n      }\\n      return utils.tryWrapperForImpl(esValue[implSymbol].getAll(...args));\\n    }\\n\\n    has(name) {\\n      const esValue = this !== null && this !== undefined ? this : globalObject;\\n      if (!exports.is(esValue)) {\\n        throw new globalObject.TypeError(\\'has' called on an object that is not a valid instance of FormData.\\);\\n      }\\n\\n      if (arguments.length < 1) {\\n        throw new globalObject.TypeError(\\n          \`Failed to execute 'has' on 'FormData': 1 argument required, but only \${arguments.length} present.\`\\n        );\\n      }\\n      const args = [];\\n      {\\n        let curArg = arguments[0];\\n        curArg = conversions[\\USVString\\](curArg, {\\n          context: \\Failed to execute 'has' on 'FormData': parameter 1\\,\\n          globals: globalObject\\n        });\\n        args.push(curArg);\\n      }\\n      return esValue[implSymbol].has(...args);\\n    }\\n\\n    set(name, value) {\\n      const esValue = this !== null && this !== undefined ? this : globalObject;\\n      if (!exports.is(esValue)) {\\n        throw new globalObject.TypeError(\\'set' called on an object that is not a valid instance of FormData.\\);\\n      }\\n\\n      if (arguments.length < 2) {\\n        throw new globalObject.TypeError(\\n          \`Failed to execute 'set' on 'FormData': 2 arguments required, but only \${arguments.length} present.\`\\n        );\\n      }\\n      const args = [];\\n      switch (arguments.length) {\\n        case 2:\\n          {\\n            let curArg = arguments[0];\\n            curArg = conversions[\\USVString\\](curArg, {\\n              context: \\Failed to execute 'set' on 'FormData': parameter 1\\,\\n              globals: globalObject\\n            });\\n            args.push(curArg);\\n          }\\n          {\\n            let curArg = arguments[1];\\n            if (Blob.is(curArg)) {\\n              {\\n                let curArg = arguments[1];\\n                curArg = Blob.convert(globalObject, curArg, {\\n                  context: \\Failed to execute 'set' on 'FormData': parameter 2\\\\n                });\\n                args.push(curArg);\\n              }\\n            } else {\\n              {\\n                let curArg = arguments[1];\\n                curArg = conversions[\\USVString\\](curArg, {\\n                  context: \\Failed to execute 'set' on 'FormData': parameter 2\\,\\n                  globals: globalObject\\n                });\\n                args.push(curArg);\\n              }\\n            }\\n          }\\n          break;\\n        default:\\n          {\\n            let curArg = arguments[0];\\n            curArg = conversions[\\USVString\\](curArg, {\\n              context: \\Failed to execute 'set' on 'FormData': parameter 1\\,\\n              globals: globalObject\\n            });\\n            args.push(curArg);\\n          }\\n          {\\n            let curArg = arguments[1];\\n            curArg = Blob.convert(globalObject, curArg, {\\n              context: \\Failed to execute 'set' on 'FormData': parameter 2\\\\n            });\\n            args.push(curArg);\\n          }\\n          {\\n            let curArg = arguments[2];\\n            if (curArg !== undefined) {\\n              curArg = conversions[\\USVString\\](curArg, {\\n                context: \\Failed to execute 'set' on 'FormData': parameter 3\\,\\n                globals: globalObject\\n              });\\n            }\\n            args.push(curArg);\\n          }\\n      }\\n      return esValue[implSymbol].set(...args);\\n    }\\n\\n    keys() {\\n      if (!exports.is(this)) {\\n        throw new globalObject.TypeError(\\'keys' called on an object that is not a valid instance of FormData.\\);\\n      }\\n      return exports.createDefaultIterator(globalObject, this, \\key\\);\\n    }\\n\\n    values() {\\n      if (!exports.is(this)) {\\n        throw new globalObject.TypeError(\\'values' called on an object that is not a valid instance of FormData.\\);\\n      }\\n      return exports.createDefaultIterator(globalObject, this, \\value\\);\\n    }\\n\\n    entries() {\\n      if (!exports.is(this)) {\\n        throw new globalObject.TypeError(\\'entries' called on an object that is not a valid instance of FormData.\\);\\n      }\\n      return exports.createDefaultIterator(globalObject, this, \\key+value\\);\\n    }\\n\\n    forEach(callback) {\\n      if (!exports.is(this)) {\\n        throw new globalObject.TypeError(\\'forEach' called on an object that is not a valid instance of FormData.\\);\\n      }\\n      if (arguments.length < 1) {\\n        throw new globalObject.TypeError(\\n          \\Failed to execute 'forEach' on 'iterable': 1 argument required, but only 0 present.\\\\n        );\\n      }\\n      callback = Function.convert(globalObject, callback, {\\n        context: \\Failed to execute 'forEach' on 'iterable': The callback provided as parameter 1\\\\n      });\\n      const thisArg = arguments[1];\\n      let pairs = Array.from(this[implSymbol]);\\n      let i = 0;\\n      while (i < pairs.length) {\\n        const [key, value] = pairs[i].map(utils.tryWrapperForImpl);\\n        callback.call(thisArg, value, key, this);\\n        pairs = Array.from(this[implSymbol]);\\n        i++;\\n      }\\n    }\\n  },
-    Blob: class Blob {\\n    constructor() {\\n      const args = [];\\n      {\\n        let curArg = arguments[0];\\n        if (curArg !== undefined) {\\n          if (!utils.isObject(curArg)) {\\n            throw new globalObject.TypeError(\\Failed to construct 'Blob': parameter 1\\ + \\ is not an iterable object.\\);\\n          } else {\\n            const V = [];\\n            const tmp = curArg;\\n            for (let nextItem of tmp) {\\n              if (exports.is(nextItem)) {\\n                nextItem = utils.implForWrapper(nextItem);\\n              } else if (utils.isArrayBuffer(nextItem)) {\\n              } else if (ArrayBuffer.isView(nextItem)) {\\n              } else {\\n                nextItem = conversions[\\USVString\\](nextItem, {\\n                  context: \\Failed to construct 'Blob': parameter 1\\ + \\'s element\\,\\n                  globals: globalObject\\n                });\\n              }\\n              V.push(nextItem);\\n            }\\n            curArg = V;\\n          }\\n        }\\n        args.push(curArg);\\n      }\\n      {\\n        let curArg = arguments[1];\\n        curArg = BlobPropertyBag.convert(globalObject, curArg, { context: \\Failed to construct 'Blob': parameter 2\\ });\\n        args.push(curArg);\\n      }\\n      return exports.setup(Object.create(new.target.prototype), globalObject, args);\\n    }\\n\\n    slice() {\\n      const esValue = this !== null && this !== undefined ? this : globalObject;\\n      if (!exports.is(esValue)) {\\n        throw new globalObject.TypeError(\\'slice' called on an object that is not a valid instance of Blob.\\);\\n      }\\n      const args = [];\\n      {\\n        let curArg = arguments[0];\\n        if (curArg !== undefined) {\\n          curArg = conversions[\\long long\\](curArg, {\\n            context: \\Failed to execute 'slice' on 'Blob': parameter 1\\,\\n            globals: globalObject,\\n            clamp: true\\n          });\\n        }\\n        args.push(curArg);\\n      }\\n      {\\n        let curArg = arguments[1];\\n        if (curArg !== undefined) {\\n          curArg = conversions[\\long long\\](curArg, {\\n            context: \\Failed to execute 'slice' on 'Blob': parameter 2\\,\\n            globals: globalObject,\\n            clamp: true\\n          });\\n        }\\n        args.push(curArg);\\n      }\\n      {\\n        let curArg = arguments[2];\\n        if (curArg !== undefined) {\\n          curArg = conversions[\\DOMString\\](curArg, {\\n            context: \\Failed to execute 'slice' on 'Blob': parameter 3\\,\\n            globals: globalObject\\n          });\\n        }\\n        args.push(curArg);\\n      }\\n      return utils.tryWrapperForImpl(esValue[implSymbol].slice(...args));\\n    }\\n\\n    get size() {\\n      const esValue = this !== null && this !== undefined ? this : globalObject;\\n\\n      if (!exports.is(esValue)) {\\n        throw new globalObject.TypeError(\\'get size' called on an object that is not a valid instance of Blob.\\);\\n      }\\n\\n      return esValue[implSymbol][\\size\\];\\n    }\\n\\n    get type() {\\n      const esValue = this !== null && this !== undefined ? this : globalObject;\\n\\n      if (!exports.is(esValue)) {\\n        throw new globalObject.TypeError(\\'get type' called on an object that is not a valid instance of Blob.\\);\\n      }\\n\\n      return esValue[implSymbol][\\type\\];\\n    }\\n  }
-  },
-  validateStatus: function validateStatus(status) {\\n    return status >= 200 && status < 300;\\n  },
-  headers: {
-    Accept: application/json, text/plain, */*
-  },
-  exposeCacheId: true,
-  url: /test/,
-  params: {
-    lorem: ipsum,
-    dolor: sit
-  },
-  schema: [
-    successResponse => \`\${successResponse}-schema-transform\`
-  ],
-  transform: [
-    successResponse => \`\${successResponse}-transform\`
-  ],
-  cacheResponse: false,
-  method: get,
-  cacheId: null
-}",
-]
-`;
-
-exports[`ServiceConfig should handle transforming service call responses: transformed responses 1`] = `
-[
-  "success-schema-transform",
-  "success-transform",
-  "success",
-  "error-error-transform",
-  "error",
-  [
-    "cancelled request",
-    undefined,
-  ],
-]
-`;
+exports[`ServiceConfig should handle producing a consistent service call configuration: response config hash 1`] = `"c1336321229"`;
 
 exports[`ServiceConfig should have specific properties and methods: specific props and methods 1`] = `
 [
@@ -741,5 +684,32 @@ exports[`ServiceConfig should have specific properties and methods: specific pro
   "globalPollInterval",
   "globalCancelTokens",
   "globalResponseCache",
+]
+`;
+
+exports[`Transform service call responses should handle transforming error responses and errors: transformed error 1`] = `
+[
+  "error-error-transform",
+  "error",
+]
+`;
+
+exports[`Transform service call responses should handle transforming responses with a cancel: transformed cancel 1`] = `
+[
+  "cancelled request",
+  "error-cancel-transform",
+]
+`;
+
+exports[`Transform service call responses should handle transforming responses with schema transform: schema 1`] = `
+[
+  "success-schema-transform",
+]
+`;
+
+exports[`Transform service call responses should handle transforming success responses and errors: transformed success 1`] = `
+[
+  "success-transform",
+  "success",
 ]
 `;
