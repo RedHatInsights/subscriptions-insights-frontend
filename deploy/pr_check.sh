@@ -32,8 +32,11 @@ BUILD_RESULTS=$?
 # Run QE tests on ephemeral environment
 # --------------------------------------------
 
+export BONFIRE_REPO_BRANCH="ci-iqe-failure"
+export BONFIRE_REPO_ORG="vbusch"
+
 # Install bonfire repo/initialize
-CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
+CICD_URL=https://raw.githubusercontent.com/vbusch/bonfire/master/cicd
 curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
 
 export APP_NAME="rhsm"
