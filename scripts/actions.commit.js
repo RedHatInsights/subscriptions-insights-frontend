@@ -131,9 +131,12 @@ const messagesList = (
 
       const descriptionValid = (description && 'valid') || 'INVALID: description (missing description)';
 
+      const isDependabotCommit = message.includes('dependabot');
+
       const lengthValid =
-        (messageLength <= maxMessageLength && 'valid') ||
-        `INVALID: message length (${messageLength} > ${maxMessageLength})`;
+        messageLength <= maxMessageLength || isDependabotCommit
+          ? 'valid'
+          : `INVALID: message length (${messageLength} > ${maxMessageLength})`;
 
       return {
         hash,
